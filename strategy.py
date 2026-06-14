@@ -46,6 +46,7 @@ if PROXY:
 EXCHANGE = ccxt.okx(_kw)
 EXCHANGE.set_sandbox_mode(os.getenv("OKX_SANDBOX", "true").lower() == "true")
 MARKETS_LOADED = False
+print(f"🔧 代理: {PROXY} | 模拟盘: {os.getenv('OKX_SANDBOX', 'true')}")
 
 GLOBAL_LATEST_SL = {}
 GLOBAL_LATEST_TP = {}
@@ -204,7 +205,10 @@ def fetch_ohlcv(sym: str) -> pd.DataFrame | None:
         try:
             EXCHANGE.load_markets(reload=True, params={"instType": "SWAP"})
         except:
-            EXCHANGE.load_markets()
+            try:
+                EXCHANGE.load_markets(params={"instType": "SWAP"})
+            except:
+                EXCHANGE.load_markets()
         MARKETS_LOADED = True
     try:
         raw = EXCHANGE.fetch_ohlcv(to_swap(sym), TIMEFRAME, limit=300)
