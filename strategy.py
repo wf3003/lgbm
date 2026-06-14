@@ -45,7 +45,15 @@ if PROXY:
     _kw["proxies"] = {"http": PROXY, "https": PROXY}
 EXCHANGE = ccxt.okx(_kw)
 EXCHANGE.set_sandbox_mode(os.getenv("OKX_SANDBOX", "true").lower() == "true")
-MARKETS_LOADED = False
+# 立即加载 SWAP 市场，避免后续自动加载 SPOT 导致超时
+try:
+    EXCHANGE.load_markets(reload=True, params={"instType": "SWAP"})
+except:
+    try:
+        EXCHANGE.load_markets(params={"instType": "SWAP"})
+    except:
+        EXCHANGE.load_markets()
+MARKETS_LOADED = True
 print(f"🔧 代理: {PROXY} | 模拟盘: {os.getenv('OKX_SANDBOX', 'true')}")
 
 GLOBAL_LATEST_SL = {}
