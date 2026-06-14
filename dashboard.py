@@ -3,7 +3,7 @@
 import json, os, time, threading, http.server, urllib.parse, ccxt, pickle
 from datetime import datetime
 from dotenv import load_dotenv
-load_dotenv()
+load_dotenv(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env"))
 
 DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 EXCHANGE = None
